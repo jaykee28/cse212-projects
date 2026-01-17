@@ -1,29 +1,36 @@
+using System;
+using System.Collections.Generic;
+
 public static class Arrays
 {
     /// <summary>
-    /// Rotate the 'data' to the right by the 'amount'. 
-    /// For example: 
-    /// List<int>{1,2,3,4,5,6,7,8,9} rotated by 5 → {5,6,7,8,9,1,2,3,4}
-    /// List<int>{1,2,3,4,5,6,7,8,9} rotated by 3 → {7,8,9,1,2,3,4,5,6}
+    /// Part 1: MultiplesOf function
+    /// </summary>
+    public static double[] MultiplesOf(double start, int count)
+    {
+        // Step 1: Create an array to store the multiples
+        double[] multiples = new double[count];
+
+        // Step 2: Loop from 0 to count - 1
+        for (int i = 0; i < count; i++)
+        {
+            // Step 3: Compute the multiple and store it
+            multiples[i] = start * (i + 1);
+        }
+
+        // Step 4: Return the array of multiples
+        return multiples;
+    }
+
+    /// <summary>
+    /// Part 2: Rotate a list to the right by a given amount
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // Step 1: Get the size of the list
         int n = data.Count;
-
-        // Step 2: Handle the case where amount is equal to the list size
-        // Rotating by n or multiples of n gives the same list
-        amount = amount % n;
-
-        // Step 3: Get the last 'amount' elements of the list using GetRange
-        List<int> endPart = data.GetRange(n - amount, amount);
-
-        // Step 4: Remove these last 'amount' elements from the original list
-        data.RemoveRange(n - amount, amount);
-
-        // Step 5: Insert the saved elements at the beginning of the list
-        data.InsertRange(0, endPart);
-
-        // Step 6: The list is now rotated to the right by 'amount'
+        amount = amount % n;                       // Normalize amount
+        List<int> endPart = data.GetRange(n - amount, amount);  // Slice last elements
+        data.RemoveRange(n - amount, amount);      // Remove from original list
+        data.InsertRange(0, endPart);              // Insert at beginning
     }
 }
