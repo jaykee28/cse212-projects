@@ -1,36 +1,50 @@
-﻿/*
- * CSE 212 Lesson 6C 
- * 
- * This code will analyze the NBA basketball data and create a table showing
- * the players with the top 10 career points.
- * 
- * Note about columns:
- * - Player ID is in column 0
- * - Points is in column 8
- * 
- * Each row represents the player's stats for a single season with a single team.
- */
-
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
+using System.Linq;
 
 public class Basketball
 {
     public static void Run()
     {
+        // Dictionary to store total points per player
         var players = new Dictionary<string, int>();
 
+        // Open the CSV file
         using var reader = new TextFieldParser("basketball.csv");
         reader.TextFieldType = FieldType.Delimited;
         reader.SetDelimiters(",");
-        reader.ReadFields(); // ignore header row
-        while (!reader.EndOfData) {
+        reader.ReadFields(); // Skip header row
+
+        // Read each line and accumulate points
+        while (!reader.EndOfData)
+        {
             var fields = reader.ReadFields()!;
-            var playerId = fields[0];
-            var points = int.Parse(fields[8]);
+            var playerId = fields[0]; // Column 0: Player ID
+            var points = int.Parse(fields[8]); // Column 8: Points
+
+            if (players.ContainsKey(playerId))
+            {
+                players[playerId] += points; // Add points for this season
+            }
+            else
+            {
+                players[playerId] = points; // First season for this player
+            }
         }
 
-        Console.WriteLine($"Players: {{{string.Join(", ", players)}}}");
+        // Sort the players by total points descending and take top 10
+        var topPlayers = players
+            .OrderByDescending(p => p.Value)
+            .Take(10)
+            .Select(p => $"{p.Key} ({p.Value})")
+            .ToArray();
 
-        var topPlayers = new string[10];
+        // Display results
+        Console.WriteLine("Top 10 Players by Career Points:");
+        foreach (var player in topPlayers)
+        {
+            Console.WriteLine(player);
+        }
     }
 }
